@@ -18,7 +18,7 @@ export function Skills() {
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: index * 0.04 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: index * 0.04 }}
               className="py-6 grid md:grid-cols-[200px_1fr] gap-4 md:gap-12 items-start"
             >
               <span

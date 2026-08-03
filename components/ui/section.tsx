@@ -32,7 +32,7 @@ export function Section({
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
           className={`mb-12 md:mb-16 flex items-baseline gap-5 ${centered ? "justify-center" : ""}`}
         >
           {num && (

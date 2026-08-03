@@ -24,7 +24,7 @@ export function TimelineItem({
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: index * 0.06 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: index * 0.06 }}
       className="relative pl-7 md:pl-9 pb-10 last:pb-0"
     >
       {/* Timeline track line */}

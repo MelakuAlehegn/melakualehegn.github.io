@@ -18,7 +18,7 @@ export function Writing() {
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: index * 0.06 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: index * 0.06 }}
             className="group flex items-start justify-between gap-6 py-8 hover:bg-surface/40 transition-colors duration-200 -mx-6 px-6 md:-mx-12 md:px-12"
           >
             <div className="min-w-0">

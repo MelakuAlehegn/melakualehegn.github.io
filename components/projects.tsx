@@ -53,7 +53,7 @@ export function Projects() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1], delay: index * 0.04 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: index * 0.04 }}
               className="group grid md:grid-cols-[3rem_1fr_auto] gap-4 md:gap-8 py-8 items-start hover:bg-surface/40 transition-colors duration-200 -mx-6 px-6 md:-mx-12 md:px-12"
             >
               {/* Index */}
