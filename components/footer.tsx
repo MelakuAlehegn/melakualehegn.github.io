@@ -1,11 +1,13 @@
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
+  const year = new Date().getFullYear();
   return (
-    <footer className="py-10 px-6 md:px-12 border-t border-border">
-      <div className="max-w-5xl mx-auto flex items-center justify-center">
-        <p className="text-sm text-text-muted">
-          Melaku Alehegn · {currentYear}
+    <footer className="border-t border-border py-8 px-6 md:px-12">
+      <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        <p className="font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--color-text-subtle)" }}>
+          Melaku Alehegn · {year}
+        </p>
+        <p className="font-mono text-[10px]" style={{ color: "var(--color-text-subtle)" }}>
+          Next.js · Tailwind · Framer Motion
         </p>
       </div>
     </footer>

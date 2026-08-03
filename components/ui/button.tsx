@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 
 interface ButtonProps {
@@ -22,13 +23,13 @@ export function Button({
   className = "",
 }: ButtonProps) {
   const baseStyles =
-    "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg";
+    "inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg shadow-xs";
 
   const variantStyles = {
     primary:
-      "border border-text bg-text text-bg hover:border-accent hover:bg-accent hover:text-bg",
+      "border border-text bg-text text-bg hover:border-accent hover:bg-accent hover:text-white shadow-md shadow-text/10",
     secondary:
-      "border border-border bg-transparent text-text-muted hover:border-border-strong hover:bg-surface-elevated hover:text-text",
+      "border border-border/90 bg-surface/60 backdrop-blur-md text-text-muted hover:border-border-strong hover:bg-surface hover:text-text",
   };
 
   const combinedClassName = `${baseStyles} ${variantStyles[variant]} ${className}`;
@@ -40,16 +41,30 @@ export function Button({
     };
 
     return (
-      <a href={href} className={combinedClassName} {...linkProps}>
-        {children}
-        {external && <ArrowUpRight className="h-4 w-4" />}
-      </a>
+      <motion.a
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.97 }}
+        href={href}
+        className={combinedClassName}
+        {...linkProps}
+      >
+        <span>{children}</span>
+        {external && (
+          <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        )}
+      </motion.a>
     );
   }
 
   return (
-    <button onClick={onClick} className={combinedClassName}>
-      {children}
-    </button>
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={onClick}
+      className={combinedClassName}
+    >
+      <span>{children}</span>
+    </motion.button>
   );
 }
+

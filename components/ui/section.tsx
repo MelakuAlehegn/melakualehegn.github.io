@@ -1,11 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eyebrow } from "./eyebrow";
 
 interface SectionProps {
   id: string;
   children: React.ReactNode;
+  num?: string;
   eyebrow?: string;
   title?: string;
   className?: string;
@@ -15,45 +15,46 @@ interface SectionProps {
 export function Section({
   id,
   children,
+  num,
   eyebrow,
   title,
   className = "",
   centered = false,
 }: SectionProps) {
-  const layoutClassName = centered
-    ? "text-center"
-    : "grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12";
-
   return (
     <section
       id={id}
-      className={`scroll-mt-24 border-t border-border/70 py-20 md:py-28 px-6 md:px-12 ${className}`}
+      className={`relative scroll-mt-14 border-t border-border py-20 md:py-28 px-6 md:px-12 ${className}`}
     >
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className={`mx-auto max-w-6xl ${layoutClassName}`}
-      >
-        {(eyebrow || title) && (
-          <div className={`${centered ? "mb-10 flex flex-col items-center" : "lg:sticky lg:top-24 lg:self-start"}`}>
-            {eyebrow && (
-              <div className="mb-4">
-                <Eyebrow>{eyebrow}</Eyebrow>
-              </div>
-            )}
-            {title && (
-              <h2 className="max-w-sm font-serif text-2xl leading-tight text-text md:text-3xl">
-                {title}
-              </h2>
-            )}
-          </div>
-        )}
-        <div className={centered ? "" : "lg:pt-1"}>
-          {children}
-        </div>
-      </motion.div>
+      <div className={`mx-auto max-w-6xl ${centered ? "" : ""}`}>
+        {/* Section header row */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className={`mb-12 md:mb-16 flex items-baseline gap-5 ${centered ? "justify-center" : ""}`}
+        >
+          {num && (
+            <span className="font-mono text-[10px] font-500 tracking-[0.2em] uppercase text-text-subtle select-none">
+              {num}
+            </span>
+          )}
+          {eyebrow && !title && (
+            <span className="section-num">{eyebrow}</span>
+          )}
+          {title && (
+            <h2
+              className="text-2xl md:text-3xl font-bold tracking-tight text-text"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              {title}
+            </h2>
+          )}
+        </motion.div>
+
+        {children}
+      </div>
     </section>
   );
 }

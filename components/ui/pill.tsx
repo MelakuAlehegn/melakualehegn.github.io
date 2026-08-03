@@ -1,30 +1,45 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 interface PillProps {
   children: React.ReactNode;
   variant?: "default" | "accent" | "muted";
 }
 
 export function Pill({ children, variant = "default" }: PillProps) {
+  const baseClassName =
+    "inline-flex items-center rounded-md border px-2.5 py-1 text-xs font-mono font-medium transition-all duration-200";
+
   if (variant === "accent") {
     return (
-      <span className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs font-medium text-accent">
+      <motion.span
+        whileHover={{ y: -1 }}
+        className={`${baseClassName} border-accent/30 bg-accent-soft text-accent shadow-xs`}
+      >
         {children}
-      </span>
+      </motion.span>
     );
   }
 
   if (variant === "muted") {
     return (
-      <span className="inline-flex items-center rounded-full border border-border px-2.5 py-0.5 text-xs font-medium text-text-subtle">
+      <motion.span
+        whileHover={{ y: -1 }}
+        className={`${baseClassName} border-border/70 bg-surface/40 text-text-subtle hover:border-border-strong hover:text-text`}
+      >
         {children}
-      </span>
+      </motion.span>
     );
   }
 
   return (
-    <span className="inline-flex items-center rounded-full border border-border px-3 py-1 text-xs font-medium text-text-muted">
+    <motion.span
+      whileHover={{ y: -1 }}
+      className={`${baseClassName} border-border/80 bg-surface/60 backdrop-blur-md text-text-muted hover:border-border-strong hover:text-text`}
+    >
       {children}
-    </span>
+    </motion.span>
   );
 }
+

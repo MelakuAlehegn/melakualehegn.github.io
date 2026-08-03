@@ -1,134 +1,205 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #f7f5f0;
-  --color-surface: #fbfaf7;
-  --color-surface-elevated: #ffffff;
-  --color-border: #ddd7cd;
-  --color-border-strong: #c9c2b7;
-  --color-text: #151515;
-  --color-text-muted: #5e5a52;
-  --color-text-subtle: #8a847a;
-  --color-accent: #405162;
-  --color-accent-hover: #26323d;
-  --color-accent-soft: rgba(64, 81, 98, 0.08);
+  /* ─── Type ─── */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), Georgia, Cambria, serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+  --font-display: var(--font-display), var(--font-sans), sans-serif;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  /* ─── Palette: Light defaults ─── */
+  --color-bg:               #F5F2EC;
+  --color-surface:          #EDE9E2;
+  --color-surface-elevated: #FDFCF9;
+  --color-border:           #D8D2C8;
+  --color-border-strong:    #B8B0A4;
+  --color-text:             #141414;
+  --color-text-muted:       #5C574F;
+  --color-text-subtle:      #9E9790;
+  --color-accent:           #C8522A;
+  --color-accent-hover:     #A8401E;
+  --color-accent-soft:      rgba(200, 82, 42, 0.08);
+  --color-glow:             rgba(200, 82, 42, 0.12);
 }
 
+/* ─── Light Mode ─── */
 [data-theme="light"] {
-  --color-bg: #f7f5f0;
-  --color-surface: #fbfaf7;
-  --color-surface-elevated: #ffffff;
-  --color-border: #ddd7cd;
-  --color-border-strong: #c9c2b7;
-  --color-text: #151515;
-  --color-text-muted: #5e5a52;
-  --color-text-subtle: #8a847a;
-  --color-accent: #405162;
-  --color-accent-hover: #26323d;
-  --color-accent-soft: rgba(64, 81, 98, 0.08);
+  --color-bg:               #F5F2EC;
+  --color-surface:          #EDE9E2;
+  --color-surface-elevated: #FDFCF9;
+  --color-border:           #D8D2C8;
+  --color-border-strong:    #B8B0A4;
+  --color-text:             #141414;
+  --color-text-muted:       #5C574F;
+  --color-text-subtle:      #9E9790;
+  --color-accent:           #C8522A;
+  --color-accent-hover:     #A8401E;
+  --color-accent-soft:      rgba(200, 82, 42, 0.08);
+  --color-glow:             rgba(200, 82, 42, 0.12);
 }
 
+/* ─── Dark Mode ─── */
 [data-theme="dark"] {
-  --color-bg: #101112;
-  --color-surface: #161718;
-  --color-surface-elevated: #1b1c1d;
-  --color-border: #2a2b2d;
-  --color-border-strong: #393b3e;
-  --color-text: #f3f1eb;
-  --color-text-muted: #b3ada4;
-  --color-text-subtle: #7f7a71;
-  --color-accent: #9fb0bf;
-  --color-accent-hover: #c7d1da;
-  --color-accent-soft: rgba(159, 176, 191, 0.08);
+  --color-bg:               #111110;
+  --color-surface:          #1A1917;
+  --color-surface-elevated: #242220;
+  --color-border:           #2E2B27;
+  --color-border-strong:    #3F3B36;
+  --color-text:             #F0ECE6;
+  --color-text-muted:       #948E86;
+  --color-text-subtle:      #5A564F;
+  --color-accent:           #E8754A;
+  --color-accent-hover:     #F08E65;
+  --color-accent-soft:      rgba(232, 117, 74, 0.1);
+  --color-glow:             rgba(232, 117, 74, 0.15);
 }
 
+/* ─── View Transitions (theme switch) ─── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.3s;
+  animation-timing-function: ease;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) { animation-name: vt-fade-out; }
+::view-transition-new(root) { animation-name: vt-fade-in; }
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ─── Base ─── */
 html {
   scroll-behavior: smooth;
-  background: var(--color-bg);
+  background-color: var(--color-bg);
 }
 
 body {
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.ambient-spotlight {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 1;
-  /* Subtle animated gradient - modern and minimalist */
-  background: linear-gradient(
-    135deg,
-    var(--color-accent-soft) 0%,
-    transparent 50%,
-    var(--color-accent-soft) 100%
-  );
-  background-size: 400% 400%;
-  animation: gradient-shift 20s ease infinite;
+/* ─── Utility: text-gradient uses text-fill so background-clip needs vendor prefix ─── */
+.text-display {
+  font-family: var(--font-display);
 }
 
-@keyframes gradient-shift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
+.text-gradient {
+  background: linear-gradient(120deg, var(--color-text) 20%, var(--color-accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Reduced motion */
+/* ─── Rule line divider ─── */
+.rule {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background-color: var(--color-border);
+}
+
+/* ─── Link underline hover (editorial style) ─── */
+.link-editorial {
+  position: relative;
+  display: inline-block;
+  color: var(--color-text);
+  text-decoration: none;
+}
+.link-editorial::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.link-editorial:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ─── Section number label style ─── */
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ─── Skill tag ─── */
+.skill-tag {
+  display: inline-block;
+  padding: 0.2em 0.6em;
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.skill-tag:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ─── Accent dot pulse (availability) ─── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.5); }
+}
+.pulse-dot {
+  animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border-strong); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-text-subtle); }
+
+/* ─── Focus ─── */
+:focus-visible {
+  outline: 1.5px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ─── Skip link ─── */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 1rem;
+  z-index: 200;
+  padding: 6px 14px;
+  background: var(--color-accent);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s;
+}
+.skip-link:focus { top: 1rem; }
+
+/* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  html {
-    scroll-behavior: auto;
-  }
-}
-
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 0;
-  background: var(--color-accent);
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  z-index: 100;
-}
-
-.skip-link:focus {
-  top: 0;
-}
-
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-surface);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-border-strong);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-subtle);
+  html { scroll-behavior: auto; }
 }

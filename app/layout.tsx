@@ -1,7 +1,28 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { AmbientSpotlight } from "@/components/ambient-spotlight";
+import { Syne, DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
+
+const display = Syne({
+  subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const sans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
+});
+
+const mono = DM_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["300", "400", "500"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Melaku Alehegn — AI · ML · Data Engineer",
@@ -31,7 +52,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className="h-full antialiased"
+      className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="relative min-h-full flex flex-col bg-bg text-text overflow-x-hidden">
@@ -41,8 +62,6 @@ export default function RootLayout({
           enableSystem
           storageKey="theme"
         >
-          <AmbientSpotlight />
-          {/* Skip to content link */}
           <a href="#main" className="skip-link">
             Skip to content
           </a>

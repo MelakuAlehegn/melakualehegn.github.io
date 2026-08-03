@@ -1,65 +1,91 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Eyebrow } from "./ui/eyebrow";
-import { Button } from "./ui/button";
+import { ArrowDownRight } from "lucide-react";
+import { resume } from "@/lib/data";
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay },
+});
 
 export function Hero() {
   return (
-    <section id="about" className="scroll-mt-24 px-6 md:px-12 pt-32 pb-20 md:pb-24">
-      <div className="mx-auto max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="max-w-4xl"
+    <section
+      id="about"
+      className="relative scroll-mt-14 min-h-[92vh] flex flex-col justify-end px-6 md:px-12 pb-16 pt-28"
+    >
+
+
+      <div className="mx-auto w-full max-w-6xl">
+        {/* Label + Availability badge */}
+        <motion.div {...fadeUp(0.0)} className="mb-6 flex flex-wrap items-center gap-4">
+          <p className="section-num">Applied AI &amp; ML Engineer</p>
+          <div className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 pulse-dot" />
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-emerald-600 dark:text-emerald-400">
+              Available
+            </span>
+          </div>
+        </motion.div>
+
+        {/* Main headline */}
+        <motion.h1
+          {...fadeUp(0.08)}
+          className="max-w-4xl leading-[1.05] tracking-tight text-text"
+          style={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 800,
+            fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
+          }}
         >
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-            className="mb-7"
-          >
-            <Eyebrow>AI / ML / DATA ENGINEER</Eyebrow>
-          </motion.div>
+          I build AI and ML
+          <br />
+          systems that{" "}
+          <span style={{ color: "var(--color-accent)" }}>ship.</span>
+        </motion.h1>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.15 }}
-            className="max-w-3xl font-serif text-3xl leading-tight text-text"
-          >
-            I&apos;m Melaku Alehegn, an AI, machine learning, and data engineer
-            building reliable systems from messy real-world data.
-          </motion.h1>
+        {/* Horizontal rule */}
+        <motion.div
+          {...fadeUp(0.14)}
+          className="mt-10 mb-10 rule"
+        />
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.2 }}
-            className="mt-8 max-w-2xl border-t border-border pt-8 text-base leading-8 text-text-muted"
+        {/* Sub-copy + CTAs */}
+        <motion.div {...fadeUp(0.18)} className="grid md:grid-cols-[1fr_auto] gap-8 items-end">
+          <p
+            className="max-w-2xl text-base leading-relaxed md:text-lg"
+            style={{ color: "var(--color-text-muted)" }}
           >
-            I work across the full path from data ingestion to model behavior —
-            pipelines, evaluation loops, retrieval systems, application APIs, and
-            the infrastructure that keeps those pieces understandable. It sits at
-            the intersection of backend engineering, applied machine learning, and
-            data systems: software clear enough to maintain and useful enough to
-            survive production.
-          </motion.p>
+            End-to-end from ingestion to model behavior — pipelines, evaluation
+            loops, retrieval systems, FastAPI backends, and the infrastructure
+            that keeps them readable once real users arrive. Software clear enough
+            to maintain and useful enough to survive production.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.25 }}
-            className="mt-8 flex flex-wrap gap-3"
-          >
-            <Button href="#work" variant="primary">
+          <div className="flex flex-wrap gap-3 md:flex-col md:items-end">
+            <a
+              href="#work"
+              className="group inline-flex items-center gap-2 text-sm font-mono uppercase tracking-widest border border-accent text-accent px-5 py-2.5 hover:bg-accent hover:text-bg transition-all duration-200"
+            >
               View work
-            </Button>
-            <Button href="#contact" variant="secondary">
-              Get in touch
-            </Button>
-          </motion.div>
+              <ArrowDownRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Bottom footnote row */}
+        <motion.div {...fadeUp(0.22)} className="mt-12 flex flex-wrap items-center gap-6">
+          {["Airflow", "dbt", "Snowflake", "FastAPI", "MLflow", "LangChain", "Qdrant"].map((t) => (
+            <span
+              key={t}
+              className="font-mono text-[10px] uppercase tracking-widest"
+              style={{ color: "var(--color-text-subtle)" }}
+            >
+              {t}
+            </span>
+          ))}
         </motion.div>
       </div>
     </section>
