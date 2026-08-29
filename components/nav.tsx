@@ -33,6 +33,17 @@ export function Nav() {
     return () => window.removeEventListener("scroll", updateActive);
   }, []);
 
+  // Drive anchor scrolling ourselves so closing the mobile drawer never races the
+  // browser's native hash jump (which, on mobile, would land back at the top).
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    const el = document.getElementById(href.replace("#", ""));
+    if (!el) return;
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.pushState(null, "", href);
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -60,6 +71,7 @@ export function Nav() {
               <a
                 key={link.href}
                 href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
                 className="relative text-xs font-mono uppercase tracking-widest py-1 transition-colors duration-200"
                 style={{
                   color: isActive ? "var(--color-accent)" : "var(--color-text-muted)",
@@ -122,7 +134,7 @@ export function Nav() {
                   <a
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={(e) => handleNavClick(e, link.href)}
                     className="text-sm font-mono uppercase tracking-widest transition-colors"
                     style={{ color: isActive ? "var(--color-accent)" : "var(--color-text-muted)" }}
                   >

@@ -55,7 +55,7 @@ export function Contact() {
             Email
           </p>
           <p
-            className="text-2xl md:text-4xl font-bold tracking-tight text-text group-hover:text-accent transition-colors duration-200"
+            className="text-2xl md:text-4xl font-bold tracking-tight text-text group-hover:text-accent transition-colors duration-200 break-words"
             style={{ fontFamily: "var(--font-display)" }}
           >
             {contact.email}

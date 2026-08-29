@@ -77,6 +77,7 @@
 html {
   scroll-behavior: smooth;
   background-color: var(--color-bg);
+  overflow-x: clip;
 }
 
 body {
@@ -85,6 +86,7 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
 }
 
 /* ─── Utility: text-gradient uses text-fill so background-clip needs vendor prefix ─── */

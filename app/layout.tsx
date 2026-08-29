@@ -55,7 +55,7 @@ export default function RootLayout({
       className={`${display.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="relative min-h-full flex flex-col bg-bg text-text overflow-x-hidden">
+      <body className="relative min-h-full flex flex-col bg-bg text-text">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="system"
