@@ -1,10 +1,35 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { Section } from "./ui/section";
-import { projects, projectCategories } from "@/lib/data";
+import { projects, projectCategories, caseStudies } from "@/lib/data";
+
+function ProjectTags({ tags }: { tags: string[] }) {
+  const [expanded, setExpanded] = useState(false);
+  const hidden = tags.length - 6;
+  const shown = expanded ? tags : tags.slice(0, 6);
+  return (
+    <p className="mt-4 font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--color-text-subtle)" }}>
+      {shown.join(" · ")}
+      {!expanded && hidden > 0 ? (
+        <>
+          {" · "}
+          <button
+            type="button"
+            onClick={() => setExpanded(true)}
+            className="text-accent transition-opacity duration-150 hover:opacity-80"
+            aria-label={`Show ${hidden} more`}
+          >
+            +{hidden}
+          </button>
+        </>
+      ) : null}
+    </p>
+  );
+}
 
 export function Projects() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -67,12 +92,24 @@ export function Projects() {
               {/* Content */}
               <div className="min-w-0">
                 <div className="flex flex-wrap items-baseline gap-3 mb-1">
-                  <h3
-                    className="text-lg md:text-xl font-bold tracking-tight text-text group-hover:text-accent transition-colors duration-200"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {project.name}
-                  </h3>
+                  {caseStudies[project.id] ? (
+                    <Link
+                      href={`/projects/${project.id}`}
+                      className="group/title inline-flex items-center gap-1.5 text-lg md:text-xl font-bold tracking-tight text-text group-hover:text-accent transition-colors duration-200"
+                      style={{ fontFamily: "var(--font-display)" }}
+                      aria-label={`Read the ${project.name} case study`}
+                    >
+                      <h3>{project.name}</h3>
+                      <ArrowUpRight className="h-4 w-4 opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0" />
+                    </Link>
+                  ) : (
+                    <h3
+                      className="text-lg md:text-xl font-bold tracking-tight text-text group-hover:text-accent transition-colors duration-200"
+                      style={{ fontFamily: "var(--font-display)" }}
+                    >
+                      {project.name}
+                    </h3>
+                  )}
                   <span className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">
                     {project.category}
                   </span>
@@ -83,24 +120,45 @@ export function Projects() {
                 <p className="text-sm leading-relaxed max-w-2xl" style={{ color: "var(--color-text-muted)" }}>
                   {project.description}
                 </p>
-                {/* Tags as inline mono text */}
-                <p className="mt-4 font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--color-text-subtle)" }}>
-                  {project.tags.slice(0, 6).join(" · ")}
-                  {project.tags.length > 6 ? ` · +${project.tags.length - 6}` : ""}
-                </p>
+                {/* Tags as inline mono text; overflow collapses into a clickable +N */}
+                <ProjectTags tags={project.tags} />
               </div>
 
               {/* CTA */}
-              <a
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`View ${project.name} on GitHub`}
-                className="group/link flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent transition-colors duration-150 mt-1"
-              >
-                GitHub
-                <ArrowUpRight className="h-3 w-3 transition-transform duration-150 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
-              </a>
+              <div className="mt-1 flex flex-col items-start gap-2 md:items-end">
+                {caseStudies[project.id] ? (
+                  <Link
+                    href={`/projects/${project.id}`}
+                    aria-label={`Read the ${project.name} case study`}
+                    className="group/link flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-accent transition-opacity duration-150 hover:opacity-80"
+                  >
+                    Case study
+                    <ArrowRight className="h-3 w-3 transition-transform duration-150 group-hover/link:translate-x-0.5" />
+                  </Link>
+                ) : null}
+                {project.demoUrl ? (
+                  <a
+                    href={project.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Watch the ${project.name} demo`}
+                    className="group/link flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-accent transition-opacity duration-150 hover:opacity-80"
+                  >
+                    Demo
+                    <ArrowUpRight className="h-3 w-3 transition-transform duration-150 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                  </a>
+                ) : null}
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View ${project.name} on GitHub`}
+                  className="group/link flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-accent transition-colors duration-150"
+                >
+                  GitHub
+                  <ArrowUpRight className="h-3 w-3 transition-transform duration-150 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                </a>
+              </div>
             </motion.article>
           ))}
         </AnimatePresence>

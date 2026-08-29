@@ -11,6 +11,26 @@ export interface Project {
   tags: string[];
   link: string;
   category: string;
+  demoUrl?: string;
+}
+
+export interface CaseStudy {
+  slug: string; // matches Project.id
+  title: string;
+  tagline: string;
+  youtubeId: string;
+  github: string;
+  demoUrl?: string;
+  overview: string;
+  highlights: { value: string; label: string }[];
+  sections: { heading: string; body: string[] }[];
+  architecture?: {
+    agent: string;
+    agentNote?: string;
+    stages: { name: string; detail: string }[];
+    note?: string;
+  };
+  stack: string[];
 }
 
 export interface Experience {
@@ -37,6 +57,16 @@ export interface Certification {
 }
 
 export const projects: Project[] = [
+  {
+    id: "pallet",
+    name: "Pallet",
+    tagline: "Forecasts demand and plans inventory, with an AI agent that runs the numbers",
+    description:
+      "A retail demand and inventory system on the M5 Walmart dataset (~21M daily sales rows). A LightGBM model forecasts how much each product will sell, a set of inventory rules turns that into when and how much to reorder, and a day-by-day simulation tests how those rules would have performed. On top sits an AI agent that does the work with you: it runs the forecasts, tries what-if scenarios, compares options, and pulls real figures from the sales data, and it checks every number it reports against an actual calculation, so it never makes figures up.",
+    tags: ["AI Agents", "LangGraph", "LightGBM", "Time series forecasting", "Gemini", "FastAPI", "DuckDB", "MLflow", "Langfuse", "Next.js"],
+    link: "https://github.com/MelakuAlehegn/inventory-copilot",
+    category: "AI / Agentic · ML · Full Stack",
+  },
   {
     id: "project-chimera",
     name: "Chimera",
@@ -88,6 +118,88 @@ export const projects: Project[] = [
 
   },
 ];
+
+export const caseStudies: Record<string, CaseStudy> = {
+  pallet: {
+    slug: "pallet",
+    title: "Pallet",
+    tagline: "Forecasts demand and plans inventory, with an AI agent that runs the numbers",
+    youtubeId: "0vwCXfhoAFs",
+    github: "https://github.com/MelakuAlehegn/inventory-copilot",
+    demoUrl: "https://www.youtube.com/watch?v=0vwCXfhoAFs",
+    overview:
+      "Pallet helps a retail planner answer a hard daily question: how much of each product to stock. It is built on the M5 Walmart dataset, about 21 million daily sales rows. A machine-learning model forecasts how much each product will sell, a set of inventory rules turns that forecast into concrete numbers (when to reorder, how much buffer to hold, how much to order), and a day-by-day simulation shows how those numbers would have played out. On top sits an AI agent that does the work with you: it runs the forecast, tries what-if scenarios, compares the options side by side, and checks every number it reports against a real calculation before you see it.",
+    highlights: [
+      { value: "+19.6%", label: "more accurate demand forecasts than the standard baseline" },
+      { value: "93.2%", label: "of demand met from stock, up from 92.3%" },
+      { value: "-12.4%", label: "lower cost from lost sales than the standard policy" },
+      { value: "~21M", label: "daily sales rows analyzed" },
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: [
+          "Stores lose money in two opposite ways. Order too much and cash sits frozen in stock that lingers on the shelf. Order too little and products run out, so customers leave and the sale is gone for good.",
+          "Finding the right amount for every product is hard. You first need a good guess of future demand, then rules for how much stock to keep on hand, and a way to test those rules before betting real money on them. Pallet ties that whole chain together so the decision is easier and safer to make.",
+        ],
+      },
+      {
+        heading: "The approach",
+        body: [
+          "Pallet works in three steps. First, a LightGBM model, trained on years of daily sales together with prices and calendar events like holidays and promotions, forecasts future demand. It predicts a range rather than a single number, so we see both the likely demand and the busy-day highs worth preparing for.",
+          "Second, that forecast feeds a set of inventory rules that calculate the three numbers a planner actually acts on: the reorder point (the stock level that triggers a new order), the safety stock (a buffer for demand that runs higher than expected), and the order-up-to level (how far to top stock back up).",
+          "Third, a simulation replays those rules day by day against real history to show how they would have performed on service and cost. The same inputs always produce the same numbers, so the output is something a planner can check and trust rather than a black box.",
+        ],
+      },
+      {
+        heading: "The AI agent",
+        body: [
+          "The forecasting and inventory math is powerful but not easy to drive by hand. The agent makes it usable: you ask a question in plain English and it does the work. It runs the forecast, changes an assumption and re-runs a what-if, compares two stocking policies side by side, and pulls real figures straight from the sales data to back up an answer. It is a hands-on assistant that executes and compares, not just one that talks.",
+          "It also has a strict rule that makes it safe to rely on. Before any answer reaches you, every number in it is matched against the actual calculation that produced it. If a figure was not computed by a real tool, the answer is thrown out, so the agent cannot invent numbers. For questions about past sales it uses a look-only connection to the data that can read but never change anything.",
+        ],
+      },
+      {
+        heading: "Results",
+        body: [
+          "The forecast is 19.6% more accurate than the standard baseline most teams start from. Feeding that better forecast into the inventory rules lifts the share of demand met from stock to 93.2% (from 92.3%) while cutting the cost of lost sales by 12.4%.",
+          "And because every number the agent reports is tied back to a real calculation, the explanations you read are backed by the same math that drives the decisions.",
+        ],
+      },
+      {
+        heading: "Engineering",
+        body: [
+          "The backend is FastAPI with async Postgres for app state and DuckDB over Parquet for fast analytical queries. The frontend is Next.js. MLflow tracks every training run and keeps the trained forecasting model in a registry, and Langfuse records each agent run so its steps can be inspected.",
+          "The whole system is Dockerized and gated by CI that runs the test suite plus ruff and strict mypy, so the code stays clean as it grows.",
+        ],
+      },
+    ],
+    architecture: {
+      agent: "AI agent",
+      agentNote:
+        "Takes a plain-English question, runs the right steps, compares the options, and verifies the numbers.",
+      stages: [
+        { name: "Data", detail: "Daily sales, prices, and calendar events" },
+        { name: "Forecast", detail: "LightGBM predicts a range of demand" },
+        { name: "Inventory rules", detail: "Reorder point, safety stock, order-up-to level" },
+        { name: "Simulation", detail: "Replays the rules to measure service level and cost" },
+      ],
+      note: "verifies every number in an answer against the calculation that produced it, before you see it.",
+    },
+    stack: [
+      "LangGraph",
+      "Gemini",
+      "LightGBM",
+      "Polars",
+      "DuckDB",
+      "FastAPI",
+      "Postgres",
+      "MLflow",
+      "Langfuse",
+      "Next.js",
+      "Docker",
+    ],
+  },
+};
 
 export const projectCategories = [
   "All",
@@ -236,9 +348,12 @@ export const skills = {
     "MLflow",
     "Celery",
     "Pandas",
+    "Polars",
     "scikit-learn",
+    "LightGBM",
     "TensorFlow",
     "Time series forecasting",
+    "DuckDB",
     "Cosmos",
   ],
   "Backend & Databases": [
@@ -250,7 +365,7 @@ export const skills = {
     "SQLAlchemy + Alembic",
     "Docker",
   ],
-  "LLMs & AI": ["Gemini", "Claude", "LangChain", "ChromaDB", "Qdrant", "MCP", "RAG"],
+  "LLMs & AI": ["Gemini", "Claude", "LangChain", "LangGraph", "Langfuse", "ChromaDB", "Qdrant", "MCP", "RAG"],
   "Cloud & BI": [
     "AWS",
     "Azure",
