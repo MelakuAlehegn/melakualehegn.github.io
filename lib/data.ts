@@ -18,7 +18,8 @@ export interface CaseStudy {
   slug: string; // matches Project.id
   title: string;
   tagline: string;
-  youtubeId: string;
+  kind?: string; // short type label shown beside the "Case Study" eyebrow
+  video?: { provider: "youtube" | "loom"; id: string };
   github: string;
   demoUrl?: string;
   overview: string;
@@ -82,8 +83,8 @@ export const projects: Project[] = [
     name: "Verba",
     tagline: "Full-stack RAG application for document Q&A",
     description:
-      "Multi-tenant Retrieval-Augmented Generation app, built backend-first. Documents are parsed, chunked, and embedded into the Qdrant vector store by an async Celery worker; questions are answered only from a user's own files — refusing to guess below a relevance threshold — with citations linking back to the exact source passages. Answers stream token-by-token over Server-Sent Events. Strict route → service → crud layering on FastAPI, with Postgres as the source of truth and the vector store as a rebuildable index.",
-    tags: ["FastAPI", "Qdrant", "RAG", "Celery", "Gemini", "React"],
+      "Multi-tenant Retrieval-Augmented Generation app, built backend-first. Documents are parsed, chunked, and embedded into the Qdrant vector store by an async Celery worker; questions are answered only from a user's own files, refusing to guess below a relevance threshold, with citations linking back to the exact source passages. Answers stream token-by-token over Server-Sent Events. Strict route → service → crud layering on FastAPI, with Postgres as the source of truth and the vector store as a rebuildable index.",
+    tags: ["FastAPI", "Qdrant", "RAG", "Celery", "React"],
     link: "https://github.com/MelakuAlehegn/verba",
     category: "Full Stack · AI / Agentic",
   },
@@ -91,7 +92,7 @@ export const projects: Project[] = [
     id: "data-warehouse",
     name: "Data Warehouse",
     "tagline": "Builds an analytics warehouse from pNEUMA drone telemetry",
-    "description": "The pNEUMA dataset captures roughly half a million vehicle trajectories from drone swarms over downtown Athens, stored as irregular-width CSV that breaks vanilla pandas. This project lands the data in Postgres via Airflow, transforms it into a star schema with dbt, and exposes the result as Metabase dashboards — all dockerised, with Cosmos rendering each dbt model as its own Airflow task and Elementary tracking run history. Tests gate downstream models, so a failing assertion stops the pipeline before bad data reaches the dashboards.",
+    "description": "The pNEUMA dataset captures roughly half a million vehicle trajectories from drone swarms over downtown Athens, stored as irregular-width CSV that breaks vanilla pandas. This project lands the data in Postgres via Airflow, transforms it into a star schema with dbt, and exposes the result as Metabase dashboards, all dockerised, with Cosmos rendering each dbt model as its own Airflow task and Elementary tracking run history. Tests gate downstream models, so a failing assertion stops the pipeline before bad data reaches the dashboards.",
     "tags": ["Airflow", "dbt", "PostgreSQL", "Docker", "Metabase"],
     "category": "Data Engineering",
     "link": "https://github.com/MelakuAlehegn/pneuma-data-warehouse"
@@ -124,7 +125,7 @@ export const caseStudies: Record<string, CaseStudy> = {
     slug: "pallet",
     title: "Pallet",
     tagline: "Forecasts demand and plans inventory, with an AI agent that runs the numbers",
-    youtubeId: "0vwCXfhoAFs",
+    video: { provider: "youtube", id: "0vwCXfhoAFs" },
     github: "https://github.com/MelakuAlehegn/inventory-copilot",
     demoUrl: "https://www.youtube.com/watch?v=0vwCXfhoAFs",
     overview:
@@ -199,6 +200,83 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Docker",
     ],
   },
+  verba: {
+    slug: "verba",
+    title: "Verba",
+    tagline: "Chat with your own documents, with answers grounded in the source",
+    kind: "Multi-tenant RAG system",
+    video: { provider: "loom", id: "535736e09c8d43a2b4c26bc06de13152" },
+    github: "https://github.com/MelakuAlehegn/verba",
+    overview:
+      "Verba lets you upload your own documents and ask questions about them in plain language. It reads and indexes your files, then answers only from what they actually say, streaming the response as it writes and citing the exact passages it used. If the answer is not in your documents, it says so instead of guessing. It is multi-tenant and self-hostable, so each person only ever sees their own files, and you can run the whole thing on your own infrastructure.",
+    highlights: [
+      { value: "Cited", label: "every answer links back to the exact source passage" },
+      { value: "Grounded", label: "answers come only from your files, with an honest \"I don't know\"" },
+      { value: "Hybrid", label: "meaning-based and keyword search combined for retrieval" },
+      { value: "Streamed", label: "answers arrive token by token as they are written" },
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: [
+          "A general chatbot is confidently wrong about your own documents. It has never read your contract, your policy manual, or your research notes, so when you ask about them it either guesses from general knowledge or invents an answer that sounds right. For anything you actually need to rely on, that is worse than no answer at all.",
+          "What you want instead is an assistant that reads your files, answers only from what they say, shows you where each answer came from, and admits when the answer simply is not there.",
+        ],
+      },
+      {
+        heading: "How it works",
+        body: [
+          "When you upload a file, Verba parses it, splits it into passages, and turns each passage into a vector (a numeric fingerprint of its meaning) stored in a search index. This happens on a background worker, so a large upload never freezes the app while it processes.",
+          "When you ask a question, Verba finds the passages most relevant to it, hands only those passages to the language model, and instructs the model to answer strictly from them and to cite each one it uses. Your original files stay the source of truth in the database; the search index is just a fast, rebuildable copy.",
+        ],
+      },
+      {
+        heading: "Getting retrieval right",
+        body: [
+          "The quality of a RAG answer is decided almost entirely by which passages it retrieves, so most of the work went there. Verba runs two searches for every question and merges them: a meaning-based vector search that catches paraphrased ideas, and a keyword search that nails exact terms like a product code or a clause number. Merging them (with a technique called reciprocal rank fusion) means a passage that ranks well in either search rises to the top, so neither fuzzy nor exact questions fall through.",
+          "Two more steps sharpen the results. Follow-up questions like \"summarise that\" are first rewritten into a standalone question using the recent conversation, so the search has something meaningful to match. And the top passages are re-ranked to remove near-duplicates, so the answer draws on several distinct parts of your documents rather than three copies of the same paragraph.",
+        ],
+      },
+      {
+        heading: "Grounding and trust",
+        body: [
+          "The model is given strict instructions: use only the supplied passages, never outside knowledge, cite each source actually used, and refuse anything the passages do not cover. A relevance threshold backs this up, so an off-topic question returns an honest \"I couldn't find that in your documents\" rather than a plausible-sounding guess.",
+          "Because every claim is tied to a cited passage you can open and read, you are never asked to simply trust the model. To keep the retrieval honest as the system changes, there is an evaluation harness that scores retrieval quality (how often the right document is found, how high it ranks, and how varied the results are) across the plain, re-ranked, and hybrid strategies.",
+        ],
+      },
+      {
+        heading: "Engineering",
+        body: [
+          "The backend is FastAPI in a strict route -> service -> crud -> model layering, with Postgres as the source of truth and Qdrant as the vector index. Document ingestion runs asynchronously on a Celery worker backed by Redis, raw files live in S3-compatible object storage, and Google Gemini provides both the embeddings and the generation. Answers stream to the browser over Server-Sent Events.",
+          "Multi-tenancy is enforced on every query so no user can ever reach another's files, with a dedicated isolation test guarding it. The frontend is a React and TypeScript single-page app, the whole stack runs locally with one Docker Compose command, and CI runs linting and tests on every change.",
+        ],
+      },
+    ],
+    architecture: {
+      agent: "Ask a question",
+      agentNote:
+        "A follow-up is first rewritten into a standalone question, then answered only from the passages retrieved below.",
+      stages: [
+        { name: "Ingest", detail: "Parse, chunk, and embed uploaded files on a background worker" },
+        { name: "Retrieve", detail: "Hybrid vector + keyword search, fused and de-duplicated" },
+        { name: "Generate", detail: "Answer strictly from the retrieved passages" },
+        { name: "Cite", detail: "Stream the answer with links to each source passage" },
+      ],
+      note: "constrains the model to the retrieved passages and refuses when the answer is not in your documents.",
+    },
+    stack: [
+      "FastAPI",
+      "Postgres",
+      "Qdrant",
+      "Celery",
+      "Redis",
+      "Gemini",
+      "RAG",
+      "React",
+      "TypeScript",
+      "Docker",
+    ],
+  },
 };
 
 export const projectCategories = [
@@ -215,7 +293,7 @@ export const experience: Experience[] = [
     id: "wickedanalytics",
     company: "WickedAnalytics",
     role: "Machine Learning / Data Engineer",
-    dates: "Jan 2026 — Present",
+    dates: "Jan 2026 - Present",
     location: "Remote",
     achievements: [
       "Built and maintained Airflow ingestion pipelines across the company's multi-client retail-analytics platform, loading supplier data into Snowflake through Azure Blob staging, headless xlsx repair, pandas-based transformation, and templated COPY INTO operations.",
@@ -228,7 +306,7 @@ export const experience: Experience[] = [
     id: "arifpay",
     company: "Arifpay",
     role: "Data Scientist",
-    dates: "Jan 2025 — May 2026",
+    dates: "Jan 2025 - May 2026",
     location: "Addis Ababa, Ethiopia",
     achievements: [
       "Built and deployed ML models for payment fraud detection on high-volume transactional data with severe class imbalance.",
@@ -243,7 +321,7 @@ export const experience: Experience[] = [
     id: "nedamco",
     company: "Nedamco Africa",
     role: "Cloud Consultant",
-    dates: "Dec 2023 — Mar 2024",
+    dates: "Dec 2023 - Mar 2024",
     location: "Addis Ababa, Ethiopia (Remote)",
     achievements: [
       "Cloud architecture consulting on AWS for client deployments.",
@@ -255,7 +333,7 @@ export const experience: Experience[] = [
     id: "openstack",
     company: "OpenStack",
     role: "Software Developer Intern",
-    dates: "Dec 2023 — Mar 2024",
+    dates: "Dec 2023 - Mar 2024",
     location: "Remote (Outreachy program)",
     achievements: [
       "Enhanced the UI of OpenStack Manila, implementing a streamlined Django-based workflow for share network creation.",
@@ -268,7 +346,7 @@ export const experience: Experience[] = [
     id: "mmcy-tech",
     company: "MMCY Tech",
     role: "Full Stack Developer Intern",
-    dates: "Jul 2023 — Jan 2024",
+    dates: "Jul 2023 - Jan 2024",
     location: "Addis Ababa, Ethiopia",
     achievements: [
       "Built a full-stack Applicant Tracking System with Vue.js, Express.js, and Tailwind CSS, including schema design and API endpoints.",
@@ -392,11 +470,11 @@ export const certifications: Certification[] = [
   {
     name: "Data Engineering, ML & Generative AI",
     issuer: "10 Academy",
-    date: "Apr 2024 — Sep 2024",
+    date: "Apr 2024 - Sep 2024",
   },
   {
     name: "Software Engineering",
     issuer: "Holberton School",
-    date: "Feb 2021 — Mar 2022",
+    date: "Feb 2021 - Mar 2022",
   },
 ];

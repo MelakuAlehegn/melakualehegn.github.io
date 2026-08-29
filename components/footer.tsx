@@ -6,9 +6,6 @@ export function Footer() {
         <p className="font-mono text-[10px] uppercase tracking-widest" style={{ color: "var(--color-text-subtle)" }}>
           Melaku Alehegn · {year}
         </p>
-        <p className="font-mono text-[10px]" style={{ color: "var(--color-text-subtle)" }}>
-          Next.js · Tailwind · Framer Motion
-        </p>
       </div>
     </footer>
   );

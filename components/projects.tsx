@@ -130,10 +130,10 @@ export function Projects() {
                   <Link
                     href={`/projects/${project.id}`}
                     aria-label={`Read the ${project.name} case study`}
-                    className="group/link flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-accent transition-opacity duration-150 hover:opacity-80"
+                    className="group/link inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent transition-all duration-200 hover:bg-accent hover:text-bg"
                   >
                     Case study
-                    <ArrowRight className="h-3 w-3 transition-transform duration-150 group-hover/link:translate-x-0.5" />
+                    <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover/link:translate-x-0.5" />
                   </Link>
                 ) : null}
                 {project.demoUrl ? (
