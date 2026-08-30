@@ -20,9 +20,21 @@ export async function generateMetadata({
   const { slug } = await params;
   const study = caseStudies[slug];
   if (!study) return {};
+  const title = `${study.title} — Case Study`;
   return {
-    title: `${study.title} — Case Study`,
+    title,
     description: study.tagline,
+    // Override the homepage OpenGraph/Twitter titles so link-preview cards
+    // (and social unfurls) show this case study, not the site's default.
+    openGraph: {
+      title,
+      description: study.tagline,
+      type: "article",
+    },
+    twitter: {
+      title,
+      description: study.tagline,
+    },
   };
 }
 
