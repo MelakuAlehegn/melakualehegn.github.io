@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { Section } from "./ui/section";
+import { SegmentedTabs } from "./ui/segmented-tabs";
 import { projects, projectCategories, caseStudies } from "@/lib/data";
 
 function ProjectTags({ tags }: { tags: string[] }) {
@@ -42,31 +43,14 @@ export function Projects() {
   return (
     <Section id="work" num="02" title="Selected Work">
       {/* Filter row */}
-      <div
-        role="tablist"
-        aria-label="Filter by category"
-        className="mb-10 flex flex-wrap gap-3"
-      >
-        {projectCategories.map((cat) => {
-          const isActive = activeCategory === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => setActiveCategory(cat)}
-              className="font-mono text-[10px] uppercase tracking-widest px-3 py-1 border transition-colors duration-150"
-              style={{
-                borderColor: isActive ? "var(--color-accent)" : "var(--color-border)",
-                color: isActive ? "var(--color-accent)" : "var(--color-text-subtle)",
-                backgroundColor: "transparent",
-              }}
-            >
-              {cat}
-            </button>
-          );
-        })}
+      <div className="mb-10">
+        <SegmentedTabs
+          layoutId="projects-filter"
+          ariaLabel="Filter by category"
+          options={projectCategories.map((cat) => ({ value: cat, label: cat }))}
+          value={activeCategory}
+          onChange={setActiveCategory}
+        />
       </div>
 
       {/* Project list */}

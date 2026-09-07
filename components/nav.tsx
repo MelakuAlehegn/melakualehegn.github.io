@@ -68,8 +68,8 @@ export function Nav() {
           Melaku
         </a>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-6">
+        {/* Desktop Links — pill track with a sliding filled active pill */}
+        <div className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
             const id = link.href.replace("#", "");
             const isActive = activeSection === id;
@@ -78,20 +78,18 @@ export function Nav() {
                 key={link.href}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
-                className="relative text-xs font-mono uppercase tracking-widest py-1 transition-colors duration-200"
-                style={{
-                  color: isActive ? "var(--color-accent)" : "var(--color-text-muted)",
-                }}
+                className={`relative rounded-full px-3 py-1.5 text-xs font-mono uppercase tracking-widest transition-colors duration-200 ${
+                  isActive ? "text-white" : "text-text-muted hover:text-text"
+                }`}
               >
-                {link.label}
                 {isActive && (
                   <motion.span
-                    layoutId="nav-underline"
-                    className="absolute bottom-0 left-0 right-0 h-px"
-                    style={{ backgroundColor: "var(--color-accent)" }}
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-accent"
                     transition={{ type: "spring", stiffness: 500, damping: 40 }}
                   />
                 )}
+                <span className="relative z-10">{link.label}</span>
               </a>
             );
           })}
