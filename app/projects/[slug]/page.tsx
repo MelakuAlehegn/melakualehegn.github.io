@@ -59,10 +59,10 @@ export default async function CaseStudyPage({
         {/* Back link (sticks to the top on scroll) */}
         <Link
           href="/#work"
-          className="group sticky top-4 z-20 inline-flex w-fit items-center gap-2 rounded-full border border-border bg-bg/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-text-subtle backdrop-blur transition-colors duration-150 hover:border-accent hover:text-accent"
+          className="group sticky top-4 z-20 inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-bg/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-accent backdrop-blur transition-colors duration-150 hover:border-accent hover:text-accent-hover"
         >
           <ArrowLeft className="h-3 w-3 transition-transform duration-150 group-hover:-translate-x-0.5" />
-          Selected Work
+          All Projects
         </Link>
 
         {/* Header */}
@@ -230,10 +230,10 @@ export default async function CaseStudyPage({
         <div className="mt-16 border-t border-border pt-8">
           <Link
             href="/#work"
-            className="group inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-subtle transition-colors duration-150 hover:text-accent"
+            className="group inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-accent transition-colors duration-150 hover:text-accent-hover"
           >
             <ArrowLeft className="h-3 w-3 transition-transform duration-150 group-hover:-translate-x-0.5" />
-            Back to Selected Work
+            Back to All Projects
           </Link>
         </div>
       </article>

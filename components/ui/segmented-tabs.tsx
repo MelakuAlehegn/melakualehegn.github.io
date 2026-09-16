@@ -38,7 +38,7 @@ export function SegmentedTabs({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className={`inline-flex flex-wrap items-center gap-1 rounded-full border border-border bg-surface/60 p-1 backdrop-blur-md ${className}`}
+      className={`flex flex-wrap items-center gap-1.5 md:inline-flex md:gap-1 md:rounded-full md:border md:border-border md:bg-surface/60 md:p-1 md:backdrop-blur-md ${className}`}
     >
       {options.map((opt) => {
         const active = value === opt.value;
@@ -50,7 +50,9 @@ export function SegmentedTabs({
             aria-selected={active}
             onClick={() => onChange(opt.value)}
             className={`relative rounded-full font-mono uppercase tracking-widest transition-colors duration-200 ${pad} ${
-              active ? "text-white" : "text-text-subtle hover:text-text"
+              active
+                ? "text-white"
+                : "border border-border text-text-subtle hover:text-text md:border-transparent"
             }`}
           >
             {active && (
