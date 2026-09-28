@@ -6,7 +6,7 @@ import "./globals.css";
 
 // Cloudflare Web Analytics — public site token, safe to ship to the client.
 // Paste the token from dash.cloudflare.com → Web Analytics here.
-const CF_BEACON_TOKEN = "";
+const CF_BEACON_TOKEN = "7e3dd894a20b4bfdadd7df8313710a49";
 
 const display = Syne({
   subsets: ["latin"],
