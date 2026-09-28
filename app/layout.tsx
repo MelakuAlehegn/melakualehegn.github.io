@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { ThemeProvider } from "next-themes";
 import { Syne, DM_Sans, DM_Mono } from "next/font/google";
 import "./globals.css";
+
+// Cloudflare Web Analytics — public site token, safe to ship to the client.
+// Paste the token from dash.cloudflare.com → Web Analytics here.
+const CF_BEACON_TOKEN = "";
 
 const display = Syne({
   subsets: ["latin"],
@@ -69,6 +74,13 @@ export default function RootLayout({
             {children}
           </main>
         </ThemeProvider>
+        {CF_BEACON_TOKEN && (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            strategy="afterInteractive"
+            data-cf-beacon={`{"token": "${CF_BEACON_TOKEN}"}`}
+          />
+        )}
       </body>
     </html>
   );
