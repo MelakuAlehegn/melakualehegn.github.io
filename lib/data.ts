@@ -91,22 +91,23 @@ export const projects: Project[] = [
   {
     id: "data-warehouse",
     name: "Data Warehouse",
-    "tagline": "Builds an analytics warehouse from pNEUMA drone telemetry",
-    "description": "The pNEUMA dataset captures roughly half a million vehicle trajectories from drone swarms over downtown Athens, stored as irregular-width CSV that breaks vanilla pandas. This project lands the data in Postgres via Airflow, transforms it into a star schema with dbt, and exposes the result as Metabase dashboards, all dockerised, with Cosmos rendering each dbt model as its own Airflow task and Elementary tracking run history. Tests gate downstream models, so a failing assertion stops the pipeline before bad data reaches the dashboards.",
-    "tags": ["Airflow", "dbt", "PostgreSQL", "Docker", "Metabase"],
-    "category": "Data Engineering",
-    "link": "https://github.com/MelakuAlehegn/pneuma-data-warehouse"
+    tagline: "Builds an analytics warehouse from pNEUMA drone telemetry",
+    description:
+      "The pNEUMA dataset captures roughly half a million vehicle trajectories from drone swarms over downtown Athens, stored as irregular-width CSV that breaks vanilla pandas. This project lands the data in Postgres via Airflow, transforms it into a star schema with dbt, and exposes the result as Metabase dashboards, all dockerised, with Cosmos rendering each dbt model as its own Airflow task and Elementary tracking run history. Tests gate downstream models, so a failing assertion stops the pipeline before bad data reaches the dashboards.",
+    tags: ["Airflow", "dbt", "PostgreSQL", "Docker", "Metabase"],
+    link: "https://github.com/MelakuAlehegn/pneuma-data-warehouse",
+    category: "Data Engineering",
   },
   {
-  id: "nl-to-sql",
-  name: "Natural Language to SQL",
-  tagline: "LLM-based tool for querying databases",
-  description:
-    "Translates natural-language questions into safe, read-only SQL with Gemini, executes them live against PostgreSQL, and returns results, a plain-English explanation, and an auto-inferred chart. A self-correcting loop feeds execution errors back to the model to repair its own queries, and defense-in-depth (keyword screening, EXPLAIN pre-flight, a least-privilege read-only role) keeps generation safe. Backed by an execution-accuracy eval harness, a pytest suite, and GitHub Actions CI.",
-  tags: ["FastAPI", "Gemini", "PostgreSQL", "Next.js", "Docker"],
-  link: "https://github.com/MelakuAlehegn/natural-language-to-sql",
-  category: "Full Stack · AI / Agentic",
-},
+    id: "nl-to-sql",
+    name: "Natural Language to SQL",
+    tagline: "LLM-based tool for querying databases",
+    description:
+      "Translates natural-language questions into safe, read-only SQL with Gemini, executes them live against PostgreSQL, and returns results, a plain-English explanation, and an auto-inferred chart. A self-correcting loop feeds execution errors back to the model to repair its own queries, and defense-in-depth (keyword screening, EXPLAIN pre-flight, a least-privilege read-only role) keeps generation safe. Backed by an execution-accuracy eval harness, a pytest suite, and GitHub Actions CI.",
+    tags: ["FastAPI", "Gemini", "PostgreSQL", "Next.js", "Docker"],
+    link: "https://github.com/MelakuAlehegn/natural-language-to-sql",
+    category: "Full Stack · AI / Agentic",
+  },
   {
     id: "telecom-analysis",
     name: "Telecom User Analysis",
@@ -115,8 +116,7 @@ export const projects: Project[] = [
       "Data analysis and dashboard project evaluating business growth opportunities in the telecommunications industry. Focuses on user engagement and satisfaction, with end-to-end exploratory analysis through to interactive visualization.",
     tags: ["Python", "Pandas", "Streamlit", "Analytics"],
     link: "https://github.com/MelakuAlehegn/TelecomUserAnalysis",
-    category: "Data Science"
-
+    category: "Data Science",
   },
 ];
 
