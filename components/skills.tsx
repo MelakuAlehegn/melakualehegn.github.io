@@ -62,7 +62,30 @@ export function Skills() {
                 >
                   {cert.date}
                 </span>
-                <span className="text-sm font-medium text-text">{cert.name}</span>
+                {cert.url ? (
+                  <a
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-1.5 text-sm font-medium text-text transition-colors hover:text-[var(--color-accent)]"
+                  >
+                    <span className="underline-offset-4 group-hover:underline">{cert.name}</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-3 w-3 shrink-0 opacity-50 transition-opacity group-hover:opacity-100"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M7 17 17 7M8 7h9v9" />
+                    </svg>
+                  </a>
+                ) : (
+                  <span className="text-sm font-medium text-text">{cert.name}</span>
+                )}
                 <span
                   className="font-mono text-[10px] uppercase tracking-widest"
                   style={{ color: "var(--color-text-subtle)" }}

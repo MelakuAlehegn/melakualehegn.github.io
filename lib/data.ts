@@ -277,6 +277,93 @@ export const caseStudies: Record<string, CaseStudy> = {
       "Docker",
     ],
   },
+  "project-chimera": {
+    slug: "project-chimera",
+    title: "Chimera",
+    tagline: "An autonomous AI influencer that writes, critiques, and publishes on its own, and knows when to stop",
+    kind: "Autonomous multi-agent system (Java 21)",
+    github: "https://github.com/MelakuAlehegn/project-chimera",
+    overview:
+      "Chimera is an autonomous agent that runs a social account end to end: it picks a trending topic, writes a short script and caption, critiques its own draft against safety and brand rules, rewrites until the draft passes or is rejected, and publishes the result to Bluesky, all without a human in the loop. It started as a 30-page enterprise specification for an autonomous AI influencer, which I rebuilt as a working, smaller-scale system: one agent, one account, one LLM provider. The interesting part was never the posting. It was building the parts that make it an agent rather than a single LLM call: separated roles, a feedback loop, a memory it actually uses, and plain code for the decisions that should not be left to a model.",
+    highlights: [
+      { value: "~12s", label: "end-to-end autonomous cycle: trend to written to judged to published" },
+      { value: "3 roles", label: "Manager, Worker, and Judge, with deliberately separated knowledge" },
+      { value: "~150 LOC", label: "Model Context Protocol client written from scratch, no SDK" },
+      { value: "0 migrations", label: "event-sourced JSONB store absorbed three result-shape changes" },
+    ],
+    sections: [
+      {
+        heading: "The problem",
+        body: [
+          "A single call to a language model can write a social post. But it cannot decide whether the post is safe, notice that it just repeated last week's topic, stop itself when something looks wrong, or remember what it did yesterday. The moment you want a system that runs on its own and can be trusted to keep running, the hard parts are everything around the model, not the model itself.",
+          "Chimera is where I worked those parts out in the open. The goal was not to post to Bluesky; that is a few lines of HTTP. The goal was to build the structure that turns a clever text generator into an agent you can leave running: roles that check each other, a loop that revises, a memory that informs the next decision, and code (not the model) in charge of the choices that must not go wrong.",
+        ],
+      },
+      {
+        heading: "Three roles that check each other",
+        body: [
+          "The work is split across three agents with deliberately separated knowledge. The Worker is the creative one: it picks a trending topic and writes the script and caption. The Judge is the critic: it evaluates a draft for safety, brand fit, and factual problems, and returns one of three verdicts, APPROVE, REVISE, or REJECT, along with a safety score and the specific issues it found. The Manager is the coordinator: it starts each cycle, acts on the Judge's verdict, decides whether to publish, and decides when to stop.",
+          "The separation is the point. The Worker does not know how it will be judged, so it cannot quietly write to the test. The Judge does not know the goal, so it cannot talk itself into approving borderline content on the grounds that it is 'what we're trying to do.' Two narrow roles that cannot see each other's incentives catch more than one model asked to both create and police its own work.",
+        ],
+      },
+      {
+        heading: "The revision loop",
+        body: [
+          "After the Worker produces a draft, the Manager runs the Judge. While the verdict is REVISE and the draft is still under a fixed revision limit, the Manager sends it back to the Worker to rewrite, with the Judge's specific issues attached, then judges it again. With the limit set to two revisions, a single published post can cost up to six model calls, and that is by design: the budget buys self-correction.",
+          "In one run the Judge flagged an unverified health claim about cortisol, and the Worker rewrote the line with hedged, defensible language before it was approved. Nothing external intervened. That loop, output being checked and sent back until it is good enough or explicitly rejected, is what made the system feel like an agent rather than a request-and-response pipeline.",
+        ],
+      },
+      {
+        heading: "A memory that answers the agent's questions",
+        body: [
+          "Chimera's memory is event-sourced in PostgreSQL. Every Manager cycle is written as one immutable row in a run_history table: a run id, a timestamp, and the goal and result stored as JSONB. Nothing is updated in place; the history is the source of truth. The schema is built around the questions the agent actually asks, not around tidy normalized tables, so there are expression indexes for the three lookups it makes often: by category, by content id, and by most recent run.",
+          "That memory earns its place by serving three concrete needs: novelty (don't pick a trend we just used), idempotency (don't double-post the same content if a step is retried), and budget (a daily cap policy that reads how much has already been done today). Storing the result as JSONB also meant the shape of the pipeline result could change three times over the project without a single database migration, which kept the schema out of the way while the design was still moving.",
+        ],
+      },
+      {
+        heading: "Knowing when not to use an LLM",
+        body: [
+          "Not every decision belongs to the model. The Manager makes three decisions each cycle, budget approval, trend selection, and the publish decision, and each one sits behind a small policy interface, so a rule-based version and an LLM-backed version are interchangeable. Trend selection, for example, has three implementations: a naive baseline, a memory-aware one that filters out previously used trends in plain code, and an LLM-backed one. Swapping between them is a one-line constructor change.",
+          "The Judge's output parser is strict on purpose. Malformed or unparseable output throws an error instead of silently defaulting to approval, because for a system that publishes on its own, 'I don't know' has to mean 'stop,' never 'proceed.' Rule-based and model-backed logic coexist behind the same interfaces, and the code keeps authority over the decisions that are too important to guess.",
+        ],
+      },
+      {
+        heading: "Building the MCP client by hand",
+        body: [
+          "The agent saves a markdown draft of every cycle, including the chosen trend and the Judge's verdict, to a drafts folder through a tool server, and it talks to that server over the Model Context Protocol. Rather than pull in the Java MCP SDK, I wrote the client from scratch, about 150 lines, specifically to see the protocol on the wire and understand it rather than treat it as magic.",
+          "It speaks JSON-RPC 2.0 over stdio, one JSON message per line, and covers the full exchange: the handshake, listing the available tools, and calling them. Responses are matched back to their requests by id on a shared output stream, and notifications are ignored. It is small, but writing it meant the protocol holds no surprises, which is exactly the understanding you want before relying on it.",
+        ],
+      },
+      {
+        heading: "Results and scope",
+        body: [
+          "A representative end-to-end run completes in about twelve seconds: four model calls, one HTTP post to Bluesky, one record written to Postgres, and one markdown draft saved. Bluesky itself is reached through direct HTTP rather than MCP, since a single well-understood integration did not need the extra layer.",
+          "I was deliberate about what to leave out. The original spec called for a Weaviate vector store; I used Postgres JSONB instead because the agent's queries are structured, not semantic. Per-agent persona files and human-in-the-loop approval were deferred, though the architecture leaves a clean seam for approval through the verdict policy. The lesson that carried over to everything since: a feedback loop between checked roles, plus plain code for the decisions that must not go wrong, is what separates an LLM call from an agent.",
+        ],
+      },
+    ],
+    architecture: {
+      agent: "Manager",
+      agentNote:
+        "Starts each cycle, acts on the Judge's verdict, and decides whether to publish or stop.",
+      stages: [
+        { name: "Trend", detail: "The Worker picks a trending topic and writes a script and caption" },
+        { name: "Judge", detail: "Scores it for safety and brand fit: APPROVE, REVISE, or REJECT" },
+        { name: "Revise", detail: "On REVISE, the Worker rewrites with the issues attached, up to a fixed limit" },
+        { name: "Publish", detail: "On APPROVE, posts to Bluesky and records the run in memory" },
+      ],
+      note: "the Worker never learns how it will be judged and the Judge never learns the goal, so neither can game the other.",
+    },
+    stack: [
+      "Java 21",
+      "Gemini",
+      "PostgreSQL",
+      "JSONB",
+      "Model Context Protocol",
+      "JSON-RPC 2.0",
+      "Bluesky API",
+    ],
+  },
 };
 
 export const projectCategories = [
@@ -461,11 +548,13 @@ export const certifications: Certification[] = [
     name: "Microsoft Certified: Azure Fundamentals",
     issuer: "Microsoft",
     date: "Mar 2024",
+    url: "https://learn.microsoft.com/en-us/users/melakualehegn-1927/credentials/3dacc35787d2d42d",
   },
   {
     name: "AWS Certified Cloud Practitioner",
     issuer: "Amazon Web Services",
     date: "Feb 2024",
+    url: "https://www.credly.com/badges/e332b405-1b9c-4f74-a874-7a073ec708fe",
   },
   {
     name: "Data Engineering, ML & Generative AI",
@@ -476,5 +565,6 @@ export const certifications: Certification[] = [
     name: "Software Engineering",
     issuer: "Holberton School",
     date: "Feb 2021 - Mar 2022",
+    url: "https://drive.google.com/file/d/1SB7EekgTGeuDmyxsr5fOHdTwNylTx4wD/view",
   },
 ];
